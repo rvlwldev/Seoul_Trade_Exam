@@ -13,6 +13,8 @@ public interface GameRule {
 
     boolean isProperResultTargetPlayer(List<Player> playerList, int resultTargetPlayerNumber);
 
+    String getInvalidCardInfo(List<String[]> games);
+
 
     default void printErrorMessage(ErrorMessage message) {
         System.err.println(message);

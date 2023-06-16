@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Game extends GameValidator {
 
     private final List<String[]> cardsPerGames = new ArrayList<>();
@@ -22,7 +23,10 @@ public class Game extends GameValidator {
             BufferedReader bufferedReader = new BufferedReader(reader);
             String line;
 
-            while ((line = bufferedReader.readLine()) != null) cardsPerGames.add(line.split(" "));
+            while ((line = bufferedReader.readLine()) != null) {
+                line = line.replaceAll("10", "T");
+                cardsPerGames.add(line.split(" "));
+            }
 
         } catch (IOException e) {
             printErrorMessage(ErrorMessage.NOT_FOUND_POKER_GAME_FILE, pokerGameFileName);
@@ -47,7 +51,20 @@ public class Game extends GameValidator {
     private void play() {
         if (!isPlayable()) return;
 
+        String[] cards = cardsPerGames.get(gameCount);
+        int deckStart = 0;
+        int deckEnd = CARD_COUNT_PER_PLAYER;
 
+        for (Player player : playerList) {
+            String[] deck = new String[CARD_COUNT_PER_PLAYER];
+
+            for (int i = deckStart; i < deckEnd; i++) deck[i % CARD_COUNT_PER_PLAYER] = cards[i];
+
+            player.setDeck(cards);
+
+            deckStart = deckEnd;
+            deckEnd += CARD_COUNT_PER_PLAYER;
+        }
 
         gameCount++;
         play();
