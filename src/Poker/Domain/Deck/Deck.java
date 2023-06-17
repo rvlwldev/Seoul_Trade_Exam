@@ -9,11 +9,9 @@ import java.util.Map;
 
 public class Deck implements PokerRank {
 
-    private static int count = 1;
-
     private int rankLevel;
 
-    private final List<Card> cardList;
+    public final List<Card> cardList;
     private final Map<Character, Integer> numberCountMap;
     private final Map<Character, Integer> pictureCountMap;
 
@@ -22,6 +20,10 @@ public class Deck implements PokerRank {
         this.rankLevel = 0;
         numberCountMap = new HashMap<>();
         pictureCountMap = new HashMap<>();
+    }
+
+    public int getRankLevel() {
+        return this.rankLevel;
     }
 
     public void setCardList(String[] cards) {
@@ -66,7 +68,7 @@ public class Deck implements PokerRank {
     }
 
     private void calculateRank() {
-        if      (isRoyalFlush())    this.rankLevel = 9;
+             if (isRoyalFlush())    this.rankLevel = 9;
         else if (isStraightFlush()) this.rankLevel = 8;
         else if (isFourOfKind())    this.rankLevel = 7;
         else if (isFullHouse())     this.rankLevel = 6;
@@ -113,7 +115,6 @@ public class Deck implements PokerRank {
 
     @Override
     public boolean isFlush() {
-//        System.out.println(pictureCountMap);
         return pictureCountMap.containsValue(5);
     }
 
@@ -122,15 +123,22 @@ public class Deck implements PokerRank {
         cardList.sort((card1, card2) -> card1.getNumberRankIndex() - card2.getNumberRankIndex());
 
         int prev = cardList.get(0).getNumberRankIndex();
-        for (int i = 1; i < cardList.size(); i++) {
-            int next = cardList.get(i).getNumberRankIndex();
 
+        int loopEndIndex = cardList.size();
+        if (isStraightWithAce()) loopEndIndex--;
+
+        for (int i = 1; i < loopEndIndex; i++) {
+            int next = cardList.get(i).getNumberRankIndex();
             if (next - prev != 1) return false;
 
             prev = next;
         }
 
         return true;
+    }
+
+    private boolean isStraightWithAce() {
+        return cardList.get(0).getNumber() == '2' && cardList.get(cardList.size() - 1).getNumber() == 'A';
     }
 
     @Override
