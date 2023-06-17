@@ -59,8 +59,7 @@ public class Game extends GameValidator {
             String[] deck = new String[CARD_COUNT_PER_PLAYER];
 
             for (int i = deckStart; i < deckEnd; i++) deck[i % CARD_COUNT_PER_PLAYER] = cards[i];
-
-            player.setDeck(cards);
+            player.setDeck(deck);
 
             deckStart = deckEnd;
             deckEnd += CARD_COUNT_PER_PLAYER;
