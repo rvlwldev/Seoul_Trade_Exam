@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Deck implements PokerRank {
 
-    private int rankLevel;
+    private int handLevel;
 
     private final List<Card> cardList;
     private final Map<Character, Integer> numberCountMap;
@@ -17,13 +17,13 @@ public class Deck implements PokerRank {
 
     public Deck() {
         this.cardList = new ArrayList<>();
-        this.rankLevel = 0;
+        this.handLevel = 0;
         numberCountMap = new HashMap<>();
         pictureCountMap = new HashMap<>();
     }
 
-    public int getRankLevel() {
-        return this.rankLevel;
+    public int getHandLevel() {
+        return this.handLevel;
     }
 
     public Map<Character, Integer> getNumberCountMap() {
@@ -31,7 +31,13 @@ public class Deck implements PokerRank {
     }
 
     public void removeNumber(char number) {
-        numberCountMap.remove(number);
+        int count = numberCountMap.get(number);
+
+        if (count == 1) {
+            numberCountMap.remove(number);
+        } else {
+            numberCountMap.put(number, count - 1);
+        }
     }
 
     public Map<Character, Integer> getPictureCountMap() {
@@ -39,7 +45,13 @@ public class Deck implements PokerRank {
     }
 
     public void removePicture(char picture) {
-        pictureCountMap.remove(picture);
+        int count = pictureCountMap.get(picture);
+
+        if (count == 1) {
+            pictureCountMap.remove(picture);
+        } else {
+            pictureCountMap.put(picture, count - 1);
+        }
     }
 
     public void setCardList(String[] cards) {
@@ -84,16 +96,16 @@ public class Deck implements PokerRank {
     }
 
     private void calculateRank() {
-             if (isRoyalFlush())    this.rankLevel = 9;
-        else if (isStraightFlush()) this.rankLevel = 8;
-        else if (isFourOfKind())    this.rankLevel = 7;
-        else if (isFullHouse())     this.rankLevel = 6;
-        else if (isFlush())         this.rankLevel = 5;
-        else if (isStraight())      this.rankLevel = 4;
-        else if (isThreeOfKind())   this.rankLevel = 3;
-        else if (isTwoPairs())      this.rankLevel = 2;
-        else if (isOnePair())       this.rankLevel = 1;
-        else                        this.rankLevel = 0;
+        if (isRoyalFlush()) this.handLevel = 9;
+        else if (isStraightFlush()) this.handLevel = 8;
+        else if (isFourOfKind()) this.handLevel = 7;
+        else if (isFullHouse()) this.handLevel = 6;
+        else if (isFlush()) this.handLevel = 5;
+        else if (isStraight()) this.handLevel = 4;
+        else if (isThreeOfKind()) this.handLevel = 3;
+        else if (isTwoPairs()) this.handLevel = 2;
+        else if (isOnePair()) this.handLevel = 1;
+        else this.handLevel = 0;
     }
 
     @Override
@@ -185,8 +197,8 @@ public class Deck implements PokerRank {
         return numberCountMap.containsValue(2);
     }
 
-    private boolean isOnePair(Map<Character, Integer> countMap) {
-        return countMap.containsValue(2);
+    private boolean isOnePair(Map<Character, Integer> countMapClone) {
+        return countMapClone.containsValue(2);
     }
 
     private boolean isOnePair(char key) {
