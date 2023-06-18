@@ -1,13 +1,13 @@
-package Poker.Domain.Deck;
+package Poker_Hands.Domain.Deck;
 
-import Poker.Domain.Rule.PokerHand;
+import Poker_Hands.Domain.Rule.PokerHand;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static Poker.Domain.Rule.PokerHand.HandValue.*;
+import static Poker_Hands.Domain.Rule.PokerHand.HandValue.*;
 
 public class Deck implements PokerHand {
 

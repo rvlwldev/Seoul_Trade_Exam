@@ -1,7 +1,7 @@
-package Poker.Domain;
+package Poker_Hands.Domain;
 
-import Poker.Domain.Deck.Deck;
-import Poker.Domain.Rule.PokerHand;
+import Poker_Hands.Domain.Deck.Deck;
+import Poker_Hands.Domain.Rule.PokerHand;
 
 public class Player {
 

@@ -1,4 +1,4 @@
-package Poker.Domain.Rule;
+package Poker_Hands.Domain.Rule;
 
 public interface PokerHand {
 

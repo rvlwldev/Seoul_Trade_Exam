@@ -1,4 +1,4 @@
-package Poker.Domain.Collection;
+package Poker_Hands.Domain.Collection;
 
 import java.util.ArrayList;
 

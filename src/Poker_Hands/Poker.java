@@ -1,7 +1,7 @@
-package Poker;
+package Poker_Hands;
 
-import Poker.Domain.Game;
-import Poker.Domain.Player;
+import Poker_Hands.Domain.Game;
+import Poker_Hands.Domain.Player;
 
 import java.util.ArrayList;
 import java.util.List;

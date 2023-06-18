@@ -1,4 +1,4 @@
-package Poker.Domain.Rule;
+package Poker_Hands.Domain.Rule;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Poker.Domain.Collection.CustomSet;
-import Poker.Domain.Player;
+import Poker_Hands.Domain.Collection.CustomSet;
+import Poker_Hands.Domain.Player;
 
-import static Poker.Domain.Rule.ErrorMessage.*;
+import static Poker_Hands.Domain.Rule.ErrorMessage.*;
 
 public class GameValidator implements GameRule {
 

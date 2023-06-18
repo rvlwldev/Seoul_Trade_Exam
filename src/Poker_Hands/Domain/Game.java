@@ -1,6 +1,6 @@
-package Poker.Domain;
+package Poker_Hands.Domain;
 
-import Poker.Domain.Rule.GameValidator;
+import Poker_Hands.Domain.Rule.GameValidator;
 
 import java.util.ArrayList;
 import java.util.List;

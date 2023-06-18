@@ -1,7 +1,7 @@
-package Poker.Domain.Rule;
+package Poker_Hands.Domain.Rule;
 
 import java.util.List;
-import Poker.Domain.Player;
+import Poker_Hands.Domain.Player;
 
 public interface GameRule {
 

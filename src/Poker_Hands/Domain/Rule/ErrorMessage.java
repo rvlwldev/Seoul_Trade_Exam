@@ -1,4 +1,4 @@
-package Poker.Domain.Rule;
+package Poker_Hands.Domain.Rule;
 
 public enum ErrorMessage {
     NOT_FOUND_POKER_GAME_FILE("파일이 존재하지 않습니다. (FILE_NAME : %s)"),

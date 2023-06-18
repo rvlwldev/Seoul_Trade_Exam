@@ -1,6 +1,6 @@
-package Poker.Domain.Deck;
+package Poker_Hands.Domain.Deck;
 
-import Poker.Domain.Rule.PokerHand;
+import Poker_Hands.Domain.Rule.PokerHand;
 
 public class Card {
 
