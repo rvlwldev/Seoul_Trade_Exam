@@ -7,25 +7,25 @@ public interface GameRule {
 
     int CARD_COUNT_PER_PLAYER = 5;
 
-    boolean isValidCardCount(int cardCount, List<String[]> games);
 
-    boolean isProperCardsAndPlayers(int cardCount, int playerCount);
-
-    boolean isProperResultTargetPlayer(List<Player> playerList, int resultTargetPlayerNumber);
-
-    String getInvalidCardInfo(List<String[]> games);
-
+    List<String[]> validateGameFileAndGetGameList(String pokerGameFilePath);
+    void validatePlayerList(List<Player> playerList);
+    void validateGame(List<String[]> games, List<Player> playerList);
+    void validateResultTargetPlayerID(List<Player> playerList, int resultTargetPlayerID);
 
     default void printErrorMessage(ErrorMessage message) {
         System.err.println(message);
+        System.exit(-1);
     }
 
     default void printErrorMessage(ErrorMessage message, String reference) {
         System.err.printf(String.valueOf(message), reference);
+        System.exit(-1);
     }
 
     default void printErrorMessage(ErrorMessage message, int reference) {
         System.err.printf(String.valueOf(message), reference);
+        System.exit(-1);
     }
 
 

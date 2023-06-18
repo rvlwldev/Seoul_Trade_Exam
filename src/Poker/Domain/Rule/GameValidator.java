@@ -1,5 +1,8 @@
 package Poker.Domain.Rule;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,81 +13,97 @@ import static Poker.Domain.Rule.ErrorMessage.*;
 
 public class GameValidator implements GameRule {
 
-    public boolean validate(List<String[]> games, int playerCount) {
-        if (games.isEmpty()) {
-            printErrorMessage(NO_GAME_INFO_LIST);
-            return false;
+    @Override
+    public List<String[]> validateGameFileAndGetGameList(String pokerGameFilePath) {
+        List<String[]> gameLogList = new ArrayList<>();
+
+        try {
+            FileReader reader = new FileReader(pokerGameFilePath);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                if(line.contains("10")) line = line.replaceAll("10", "T");
+                gameLogList.add(line.split(" "));
+            }
+
+        } catch (IOException e) {
+            printErrorMessage(ErrorMessage.NOT_FOUND_POKER_GAME_FILE, pokerGameFilePath);
         }
 
-        int cardCount = games.get(0).length;
-
-        if (!isValidCardCount(cardCount, games)) {
-            printErrorMessage(NOT_PROPER_CARD_COUNT);
-            return false;
-        }
-
-        if (!isProperCardsAndPlayers(cardCount, playerCount)) {
-            printErrorMessage(NOT_PROPER_PLAYER_AND_CARD_COUNT, CARD_COUNT_PER_PLAYER);
-            return false;
-        }
-
-        String invalidInfo = getInvalidCardInfo(games);
-        if (invalidInfo != null) {
-            printErrorMessage(NOT_ALLOWED_INPUT_CARD_INFO, invalidInfo);
-            return false;
-        }
-
-        return true;
+        return gameLogList;
     }
 
     @Override
-    public boolean isValidCardCount(int cardCount, List<String[]> games) {
-        for (int i = 1; i < games.size(); i++) {
-            if (cardCount != games.get(i).length) return false;
-        }
+    public void validatePlayerList(List<Player> playerList) {
+        List<Integer> duplicatedIdList = new ArrayList<>();
 
-        return true;
-    }
-
-    @Override
-    public boolean isProperCardsAndPlayers(int cardCount, int playerCount) {
-        return playerCount * 5 == cardCount;
-    }
-
-    @Override
-    public boolean isProperResultTargetPlayer(List<Player> playerList, int resultTargetPlayerNumber) {
         for (Player player : playerList) {
-            if (player.getID() == resultTargetPlayerNumber) return true;
+            int id = player.getID();
+
+            if (duplicatedIdList.contains(id)) printErrorMessage(DUPLICATED_PLAYER_ID, id);
+            else duplicatedIdList.add(player.getID());
         }
 
-        printErrorMessage(NOT_FOUND_RESULT_TARGET_PLAYER, resultTargetPlayerNumber);
-
-        return false;
     }
 
     @Override
-    public String getInvalidCardInfo(List<String[]> games) {
-        CustomSet<String> allCards = getAllCardSet(games);
+    public void validateGame(List<String[]> gameList, List<Player> playerList) {
+        if (gameList.isEmpty()) printErrorMessage(NO_GAME_INFO_LIST);
+
+        validateCardCount(gameList);
+
+        int cardCount = gameList.get(0).length;
+        validateCardAndPlayers(cardCount, playerList);
+
+        validateCardsOfGame(gameList);
+    }
+
+    @Override
+    public void validateResultTargetPlayerID(List<Player> playerList, int resultTargetPlayerID) {
+        for (Player player : playerList) {
+            if (player.getID() == resultTargetPlayerID) return;
+        }
+
+        printErrorMessage(NOT_FOUND_RESULT_TARGET_PLAYER, resultTargetPlayerID);
+    }
+
+    private void validateCardCount(List<String[]> gameList) {
+        int cardCount = gameList.get(0).length;
+
+        for (int i = 1; i < gameList.size(); i++) {
+            if (cardCount != gameList.get(i).length) printErrorMessage(NOT_PROPER_CARD_COUNT);
+        }
+
+    }
+
+    private void validateCardAndPlayers(int cardCount, List<Player> playerList) {
+        if (!(playerList.size() * CARD_COUNT_PER_PLAYER == cardCount)) {
+            printErrorMessage(NOT_PROPER_PLAYER_AND_CARD_COUNT, CARD_COUNT_PER_PLAYER);
+        }
+    }
+
+
+    private void validateCardsOfGame(List<String[]> gameList) {
+        CustomSet<String> allCards = getAllCardSet(gameList);
         List<String> invalidCardList = new ArrayList<>();
 
-        for (String info : allCards) {
-            if (!isProperCardInfo(info)) invalidCardList.add(info);
+        for (String card : allCards) {
+            if (!checkCard(card)) invalidCardList.add(card);
         }
 
-        return invalidCardList.isEmpty() ? null : invalidCardList.toString();
+        if (!invalidCardList.isEmpty()) printErrorMessage(NOT_ALLOWED_INPUT_CARD_INFO, invalidCardList.toString());
     }
 
-    private CustomSet<String> getAllCardSet(List<String[]> games) {
+    private CustomSet<String> getAllCardSet(List<String[]> gameList) {
         CustomSet<String> allCardSet = new CustomSet<>();
 
-        for (String[] array : games) allCardSet.addAll(array);
+        for (String[] array : gameList) allCardSet.addAll(array);
 
         return allCardSet;
     }
 
-    private boolean isProperCardInfo(String info) {
-        info = info.replaceAll("10", "T");
-
+    private boolean checkCard(String info) {
         if (info.length() != 2) return false;
 
         char[] arr = info.toCharArray();

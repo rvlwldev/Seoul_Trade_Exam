@@ -1,57 +1,39 @@
 package Poker.Domain;
 
-import Poker.Domain.Rule.ErrorMessage;
 import Poker.Domain.Rule.GameValidator;
 
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class Game extends GameValidator {
 
-    private final List<String[]> cardsPerGames = new ArrayList<>();
-    private final List<Player> playerList = new ArrayList<>();
+    private final List<String[]> gameList;
+    private final List<Player> playerList;
 
-    private int gameCount = 0;
+    private int gameCount;
 
-    public boolean prepare(String pokerGameFileName, Player... players) {
-        try {
-            FileReader reader = new FileReader(pokerGameFileName);
-            BufferedReader bufferedReader = new BufferedReader(reader);
-            String line;
+    public Game(String pokerGameFilePath, List<Player> playerList) {
+        this.gameList = validateGameFileAndGetGameList(pokerGameFilePath);
 
-            while ((line = bufferedReader.readLine()) != null) {
-                line = line.replaceAll("10", "T");
-                cardsPerGames.add(line.split(" "));
-            }
+        validatePlayerList(playerList);
+        this.playerList = playerList;
 
-        } catch (IOException e) {
-            printErrorMessage(ErrorMessage.NOT_FOUND_POKER_GAME_FILE, pokerGameFileName);
-            return false;
-        }
-
-        if (validate(cardsPerGames, players.length)) {
-            for (Player player : players) playerList.add(player);
-            return true;
-        }
-
-        return false;
+        this.gameCount = 0;
     }
 
     public void play(int resultTargetPlayerNumber) {
-        if (isProperResultTargetPlayer(playerList, resultTargetPlayerNumber)) {
-            play();
-            printResult(resultTargetPlayerNumber);
-        }
+        validateResultTargetPlayerID(playerList, resultTargetPlayerNumber);
+        validateGame(this.gameList, playerList);
+
+        play();
+        printResult(resultTargetPlayerNumber);
     }
 
     private void play() {
         if (!isPlayable()) return;
 
-        String[] cards = cardsPerGames.get(gameCount);
+        String[] cards = gameList.get(gameCount);
         int deckStart = 0;
         int deckEnd = CARD_COUNT_PER_PLAYER;
 
@@ -74,7 +56,7 @@ public class Game extends GameValidator {
     }
 
     private boolean isPlayable() {
-        return gameCount < cardsPerGames.size();
+        return gameCount < gameList.size();
     }
 
     private Player findWinner() {
