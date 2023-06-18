@@ -28,6 +28,10 @@ public interface GameRule {
         System.exit(-1);
     }
 
+    default void printErrorMessage(ErrorMessage message, int referenceInt, String referenceString) {
+        System.err.printf(String.valueOf(message), referenceInt, referenceString);
+        System.exit(-1);
+    }
 
 
 

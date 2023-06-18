@@ -22,9 +22,13 @@ public class GameValidator implements GameRule {
             BufferedReader bufferedReader = new BufferedReader(reader);
             String line;
 
+            int lineCount = 1;
             while ((line = bufferedReader.readLine()) != null) {
                 if(line.contains("10")) line = line.replaceAll("10", "T");
-                gameLogList.add(line.split(" "));
+                String[] cards = line.split(" ");
+                validateDuplicatedCard(cards, lineCount);
+                lineCount++;
+                gameLogList.add(cards);
             }
 
         } catch (IOException e) {
@@ -32,6 +36,15 @@ public class GameValidator implements GameRule {
         }
 
         return gameLogList;
+    }
+
+    public void validateDuplicatedCard(String[] cards, int lineCount) {
+        List<String> duplicatedList = new ArrayList<>();
+
+        for (String card : cards) {
+            if(duplicatedList.contains(card)) printErrorMessage(DUPLICATED_CARD, lineCount, card);
+            else duplicatedList.add(card);
+        }
     }
 
     @Override
