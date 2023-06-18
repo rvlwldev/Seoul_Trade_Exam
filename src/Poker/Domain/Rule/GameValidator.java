@@ -54,7 +54,7 @@ public class GameValidator implements GameRule {
     @Override
     public boolean isProperResultTargetPlayer(List<Player> playerList, int resultTargetPlayerNumber) {
         for (Player player : playerList) {
-            if (player.ID == resultTargetPlayerNumber) return true;
+            if (player.getID() == resultTargetPlayerNumber) return true;
         }
 
         printErrorMessage(NOT_FOUND_RESULT_TARGET_PLAYER, resultTargetPlayerNumber);

@@ -11,7 +11,7 @@ public class Deck implements PokerRank {
 
     private int rankLevel;
 
-    public final List<Card> cardList;
+    private final List<Card> cardList;
     private final Map<Character, Integer> numberCountMap;
     private final Map<Character, Integer> pictureCountMap;
 
@@ -24,6 +24,22 @@ public class Deck implements PokerRank {
 
     public int getRankLevel() {
         return this.rankLevel;
+    }
+
+    public Map<Character, Integer> getNumberCountMap() {
+        return numberCountMap;
+    }
+
+    public void removeNumber(char number) {
+        numberCountMap.remove(number);
+    }
+
+    public Map<Character, Integer> getPictureCountMap() {
+        return pictureCountMap;
+    }
+
+    public void removePicture(char picture) {
+        pictureCountMap.remove(picture);
     }
 
     public void setCardList(String[] cards) {
