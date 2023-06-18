@@ -1,15 +1,17 @@
 package Poker.Domain.Deck;
 
-import Poker.Domain.Rule.PokerRank;
+import Poker.Domain.Rule.PokerHand;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Deck implements PokerRank {
+import static Poker.Domain.Rule.PokerHand.HandValue.*;
 
-    private int handLevel;
+public class Deck implements PokerHand {
+
+    private int handValue;
 
     private final List<Card> cardList;
     private final Map<Character, Integer> numberCountMap;
@@ -17,41 +19,61 @@ public class Deck implements PokerRank {
 
     public Deck() {
         this.cardList = new ArrayList<>();
-        this.handLevel = 0;
+        this.handValue = 0;
         numberCountMap = new HashMap<>();
         pictureCountMap = new HashMap<>();
     }
 
-    public int getHandLevel() {
-        return this.handLevel;
+    public int getHandValue() {
+        return this.handValue;
     }
 
-    public Map<Character, Integer> getNumberCountMap() {
-        return numberCountMap;
+    public int getHighestNumberIndexOfHand() {
+        if (handValue == FOUR_OF_KIND.getValue()) {
+            return getHighestOfNumberIndexByCount(4);
+        }
+
+        if (handValue == THREE_OF_KIND.getValue()
+        ||  handValue == FULL_HOUSE.getValue()) {
+            return getHighestOfNumberIndexByCount(3);
+        }
+
+        if (handValue == ONE_PAIR.getValue()
+        ||  handValue == TWO_PAIRS.getValue()) {
+            return getHighestOfNumberIndexByCount(2);
+        }
+
+        return getHighestIndexOfAllNumber();
+    }
+
+    private int getHighestOfNumberIndexByCount(int count) {
+        int result = -1;
+
+        for (char number : numberCountMap.keySet()) {
+            if(numberCountMap.get(number) != count) continue;
+
+            int index = PokerHand.numberIndexOf(number);
+            if (index > result) result = index;
+        }
+
+        return result;
+    }
+
+    private int getHighestIndexOfAllNumber() {
+        int result = -1;
+        for (char number : numberCountMap.keySet()) {
+            int index = PokerHand.numberIndexOf(number);
+            if (index > result) result = index;
+        }
+
+        return result;
     }
 
     public void removeNumber(char number) {
         int count = numberCountMap.get(number);
 
-        if (count == 1) {
-            numberCountMap.remove(number);
-        } else {
-            numberCountMap.put(number, count - 1);
-        }
-    }
-
-    public Map<Character, Integer> getPictureCountMap() {
-        return pictureCountMap;
-    }
-
-    public void removePicture(char picture) {
-        int count = pictureCountMap.get(picture);
-
-        if (count == 1) {
-            pictureCountMap.remove(picture);
-        } else {
-            pictureCountMap.put(picture, count - 1);
-        }
+        if (count == 1) numberCountMap.remove(number);
+        else numberCountMap.put(number, count - 1);
     }
 
     public void setCardList(String[] cards) {
@@ -97,16 +119,16 @@ public class Deck implements PokerRank {
     }
 
     private void calculateRank() {
-        if (isRoyalFlush()) this.handLevel = 9;
-        else if (isStraightFlush()) this.handLevel = 8;
-        else if (isFourOfKind()) this.handLevel = 7;
-        else if (isFullHouse()) this.handLevel = 6;
-        else if (isFlush()) this.handLevel = 5;
-        else if (isStraight()) this.handLevel = 4;
-        else if (isThreeOfKind()) this.handLevel = 3;
-        else if (isTwoPairs()) this.handLevel = 2;
-        else if (isOnePair()) this.handLevel = 1;
-        else this.handLevel = 0;
+             if (isRoyalFlush())    this.handValue = ROYAL_FLUSH.getValue();
+        else if (isStraightFlush()) this.handValue = STRAIGHT_FLUSH.getValue();
+        else if (isFourOfKind())    this.handValue = FOUR_OF_KIND.getValue();
+        else if (isFullHouse())     this.handValue = FULL_HOUSE.getValue();
+        else if (isFlush())         this.handValue = FLUSH.getValue();
+        else if (isStraight())      this.handValue = STRAIGHT.getValue();
+        else if (isThreeOfKind())   this.handValue = THREE_OF_KIND.getValue();
+        else if (isTwoPairs())      this.handValue = TWO_PAIRS.getValue();
+        else if (isOnePair())       this.handValue = ONE_PAIR.getValue();
+        else                        this.handValue = HIGH_CARD.getValue();
     }
 
     @Override
@@ -203,4 +225,5 @@ public class Deck implements PokerRank {
     private boolean isOnePair(char key) {
         return numberCountMap.get(key) == 2;
     }
+
 }

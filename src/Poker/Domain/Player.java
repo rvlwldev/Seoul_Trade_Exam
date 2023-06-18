@@ -1,9 +1,7 @@
 package Poker.Domain;
 
 import Poker.Domain.Deck.Deck;
-import Poker.Domain.Rule.PokerRank;
-
-import java.util.Map;
+import Poker.Domain.Rule.PokerHand;
 
 public class Player {
 
@@ -28,32 +26,23 @@ public class Player {
         return this.winCount;
     }
 
-    public Deck getDeck() {
-        return this.deck;
-    }
-
     public void setDeck(String[] cards) {
         this.deck = new Deck();
         deck.setCardList(cards);
     }
 
     public int getDeckRankLevel() {
-        return deck.getHandLevel();
+        return deck.getHandValue();
     }
 
     public int popHighestNumberIndex() {
-        Map<Character, Integer> numberMap = deck.getNumberCountMap();
-        if (numberMap.isEmpty()) return -1;
+        int index = deck.getHighestNumberIndexOfHand();
+        if (index < 0) return index;
 
-        int highest = -1;
-        for (char number : numberMap.keySet()) {
-            int index = PokerRank.numberIndexOf(number);
-            if (index > highest) highest = index;
-        }
+        char number = PokerHand.NUMBER_PATTERN[index];
+        deck.removeNumber(number);
 
-        deck.removeNumber(PokerRank.NUMBER_PATTERN[highest]);
-
-        return highest;
+        return index;
     }
 
 }

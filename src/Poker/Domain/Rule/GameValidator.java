@@ -121,7 +121,7 @@ public class GameValidator implements GameRule {
 
         char[] arr = info.toCharArray();
 
-        return PokerRank.isPokerNumber(arr[0]) && PokerRank.isPokerPicture(arr[1]);
+        return PokerHand.isPokerNumber(arr[0]) && PokerHand.isPokerPicture(arr[1]);
     }
 
 }

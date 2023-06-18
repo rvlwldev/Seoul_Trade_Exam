@@ -1,6 +1,6 @@
 package Poker.Domain.Deck;
 
-import Poker.Domain.Rule.PokerRank;
+import Poker.Domain.Rule.PokerHand;
 
 public class Card {
 
@@ -23,10 +23,10 @@ public class Card {
     }
 
     public int getNumberRankIndex() {
-        return PokerRank.numberIndexOf(this.number);
+        return PokerHand.numberIndexOf(this.number);
     }
 
     public int getPictureRankIndex() {
-        return PokerRank.numberIndexOf(this.number);
+        return PokerHand.numberIndexOf(this.number);
     }
 }

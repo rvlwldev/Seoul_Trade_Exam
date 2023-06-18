@@ -5,7 +5,6 @@ import Poker.Domain.Rule.GameValidator;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Game extends GameValidator {
 
     private final List<String[]> gameList;
@@ -22,12 +21,12 @@ public class Game extends GameValidator {
         this.gameCount = 0;
     }
 
-    public void play(int resultTargetPlayerNumber) {
-        validateResultTargetPlayerID(playerList, resultTargetPlayerNumber);
+    public void play(int resultTargetPlayerID) {
+        validateResultTargetPlayerID(playerList, resultTargetPlayerID);
         validateGame(this.gameList, playerList);
 
         play();
-        printResult(resultTargetPlayerNumber);
+        printResult(resultTargetPlayerID);
     }
 
     private void play() {
@@ -66,10 +65,10 @@ public class Game extends GameValidator {
             int rankLevel = player.getDeckRankLevel();
 
             if (rankLevel > highestRankLevel) {
-                highestRankLevel = rankLevel;
                 winnerCandidate.clear();
-
                 winnerCandidate.add(player);
+
+                highestRankLevel = rankLevel;
             } else if (rankLevel == highestRankLevel) {
                 winnerCandidate.add(player);
             }
@@ -89,22 +88,23 @@ public class Game extends GameValidator {
             if (cardIndex < 0) return null;
 
             if (cardIndex > highestNumber) {
-                highestNumber = cardIndex;
                 result.clear();
                 result.add(player);
+
+                highestNumber = cardIndex;
             } else if (cardIndex == highestNumber) {
                 result.add(player);
             }
         }
 
-        if (candidates.size() > 1) return findWinnerCandidatesByNumber(result);
+        if (result.size() == 1) return result.get(0);
 
-        return candidates.get(0);
+        return findWinnerCandidatesByNumber(result);
     }
 
-    private void printResult(int resultTargetPlayerNumber) {
+    private void printResult(int resultTargetPlayerID) {
         for (Player player : playerList) {
-            if (player.getID() == resultTargetPlayerNumber) {
+            if (player.getID() == resultTargetPlayerID) {
                 System.out.printf("PLAYER%d's win count : %d", player.getID(), player.getWinCount());
                 return;
             }
