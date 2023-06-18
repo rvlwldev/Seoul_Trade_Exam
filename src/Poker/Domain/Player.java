@@ -28,18 +28,22 @@ public class Player {
         return this.winCount;
     }
 
+    public Deck getDeck() {
+        return this.deck;
+    }
+
     public void setDeck(String[] cards) {
         this.deck = new Deck();
         deck.setCardList(cards);
     }
 
     public int getDeckRankLevel() {
-        return deck.getRankLevel();
+        return deck.getHandLevel();
     }
 
-    public char getHighestNumberIndex() {
-        char result;
+    public int popHighestNumberIndex() {
         Map<Character, Integer> numberMap = deck.getNumberCountMap();
+        if (numberMap.isEmpty()) return -1;
 
         int highest = -1;
         for (char number : numberMap.keySet()) {
@@ -47,29 +51,9 @@ public class Player {
             if (index > highest) highest = index;
         }
 
-        result = PokerRank.NUMBER_PATTERN[highest];
-        deck.removeNumber(result);
+        deck.removeNumber(PokerRank.NUMBER_PATTERN[highest]);
 
-        return result;
+        return highest;
     }
-
-    public char getHighestPictureIndex() {
-        char result;
-        Map<Character, Integer> pictureMap = deck.getPictureCountMap();
-
-        int highest = -1;
-        for (char picture : pictureMap.keySet()) {
-            int index = PokerRank.pictureIndexOf(picture);
-            if (index > highest) highest = index;
-        }
-
-        result = PokerRank.PICTURE_PATTERN[highest];
-        deck.removePicture(result);
-
-        return result;
-    }
-
-
-
 
 }

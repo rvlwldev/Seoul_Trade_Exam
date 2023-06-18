@@ -48,7 +48,6 @@ public class Game extends GameValidator {
         }
 
         Player winner = findWinner();
-
         if (winner != null) winner.win();
 
         gameCount++;
@@ -78,56 +77,36 @@ public class Game extends GameValidator {
 
         if (winnerCandidate.size() == 1) return winnerCandidate.get(0);
 
-        List<Player> winnersByNumber = findWinnerCandidatesByNumber(winnerCandidate);
-        if (winnersByNumber.size() == 1) return winnersByNumber.get(0);
-
-        winnersByNumber = findWinnerCandidatesByPicture(winnerCandidate);
-        if (winnersByNumber.size() == 1) return winnersByNumber.get(0);
-
-        return null;
+        return findWinnerCandidatesByNumber(winnerCandidate);
     }
 
-    private List<Player> findWinnerCandidatesByNumber(List<Player> candidates) {
+    private Player findWinnerCandidatesByNumber(List<Player> candidates) {
         List<Player> result = new ArrayList<>();
 
         int highestNumber = -1;
-
         for (Player player : candidates) {
-            int cardIndex = player.getHighestNumberIndex();
+            int cardIndex = player.popHighestNumberIndex();
+            if (cardIndex < 0) return null;
 
             if (cardIndex > highestNumber) {
                 highestNumber = cardIndex;
                 result.clear();
                 result.add(player);
-            }
-        }
-
-        return result;
-    }
-
-    private List<Player> findWinnerCandidatesByPicture(List<Player> candidates) {
-        List<Player> result = new ArrayList<>();
-
-        int highestPicture = -1;
-
-        for (Player player : candidates) {
-            int cardIndex = player.getHighestPictureIndex();
-
-            if (cardIndex > highestPicture) {
-                highestPicture = cardIndex;
-                result.clear();
+            } else if (cardIndex == highestNumber) {
                 result.add(player);
             }
         }
 
-        return result;
+        if (candidates.size() > 1) return findWinnerCandidatesByNumber(result);
+
+        return candidates.get(0);
     }
 
     private void printResult(int resultTargetPlayerNumber) {
         for (Player player : playerList) {
             if (player.getID() == resultTargetPlayerNumber) {
-                System.out.println(playerList.get(resultTargetPlayerNumber).getWinCount());
-                break;
+                System.out.printf("PLAYER%d's win count : %d", player.getID(), player.getWinCount());
+                return;
             }
         }
     }

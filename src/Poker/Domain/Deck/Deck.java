@@ -61,6 +61,7 @@ public class Deck implements PokerRank {
 
             this.cardList.add(card);
         }
+        cardList.sort((card1, card2) -> card1.getNumberRankIndex() - card2.getNumberRankIndex());
 
         for (Card card : cardList) {
             if (!numberCountMap.containsKey(card.getNumber())) {
@@ -148,8 +149,6 @@ public class Deck implements PokerRank {
 
     @Override
     public boolean isStraight() {
-        cardList.sort((card1, card2) -> card1.getNumberRankIndex() - card2.getNumberRankIndex());
-
         int prev = cardList.get(0).getNumberRankIndex();
 
         int loopEndIndex = cardList.size();
